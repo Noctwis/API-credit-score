@@ -30,7 +30,7 @@ async def prediction(file: UploadFile = File(...)):
     return {
         "filename": file.filename,
         "content_type": file.content_type,
-        "predictions": response,
+        "predictions": chk_id,
     }
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=5000)
