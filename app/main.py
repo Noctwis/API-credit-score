@@ -3,7 +3,7 @@ from typing import List
 import uvicorn
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from model import load_model, predict
-from PIL import Image
+#from PIL import Image
 from pydantic import BaseModel
 app = FastAPI()
 model = load_model()

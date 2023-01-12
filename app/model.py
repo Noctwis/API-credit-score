@@ -1,10 +1,6 @@
 import numpy as np
 from PIL import Image
 import lightgbm as lgbm
-from tensorflow.keras.applications import ResNet50, imagenet_utils
-from tensorflow.keras.applications.imagenet_utils import (decode_predictions,
-                                                          preprocess_input)
-from tensorflow.keras.preprocessing.image import img_to_array
 import pickle
 def load_model():
     '''loading the trained model'''
