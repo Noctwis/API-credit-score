@@ -8,10 +8,9 @@ def load_model():
     clf = pickle.load(pickle_in)
     return clf
     
-    
-def predict(content, model):
-    # We keep the 2 classes with the highest confidence score
-    results = decode_predictions(model.predict(content), 2)[0]
-    response = [
-        {"class": result[1], "score": float(round(result[2], 3))} for result in results
-    ]
+   
+def predict(content, id, model):
+    X=content.iloc[:, :-1]
+
+    score = clf.predict_proba(X[X.index == int(id)])[:,1]
+    return score
