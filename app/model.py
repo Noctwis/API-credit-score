@@ -1,5 +1,6 @@
 import numpy as np
 from PIL import Image
+import lightgbm as lgbm
 from tensorflow.keras.applications import ResNet50, imagenet_utils
 from tensorflow.keras.applications.imagenet_utils import (decode_predictions,
                                                           preprocess_input)
