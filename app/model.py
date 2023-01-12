@@ -1,5 +1,5 @@
 import numpy as np
-from PIL import Image
+#from PIL import Image
 import lightgbm as lgbm
 import pickle
 def load_model():
