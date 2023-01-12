@@ -8,6 +8,7 @@ from pydantic import BaseModel
 app = FastAPI()
 model = load_model()
 # Define the response JSON
+
 class Prediction(BaseModel):
     filename: str
     content_type: str
@@ -15,13 +16,13 @@ class Prediction(BaseModel):
 @app.post("/predict", response_model=Prediction)
 async def prediction(file: UploadFile = File(...)):
     # Ensure that the file is an image
-    if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="File provided is not an image.")
+    #if not file.content_type.startswith("image/"):
+    #    raise HTTPException(status_code=400, detail="File provided is not an image.")
     content = await file.read()
-    image = Image.open(BytesIO(content)).convert("RGB")
+    #image = Image.open(BytesIO(content)).convert("RGB")
     # preprocess the image and prepare it for classification
-    image = prepare_image(image, target=(224, 224))
-    response = predict(image, model)
+    #image = prepare_image(image, target=(224, 224))
+    response = predict(content, model)
     # return the response as a JSON
     return {
         "filename": file.filename,
