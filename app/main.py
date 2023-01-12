@@ -22,7 +22,7 @@ async def prediction(file: UploadFile = File(...)):
     #image = Image.open(BytesIO(content)).convert("RGB")
     # preprocess the image and prepare it for classification
     cli = prepare_cli(content)
-    chk_id = sample['SK_ID_CURR']
+    chk_id = cli['SK_ID_CURR']
     sample = cli.drop(['SK_ID_CURR', 'TARGET'], axis=1)
     response = predict(sample, chk_id, model)
     #response = predict(content, model)
