@@ -23,7 +23,7 @@ async def prediction(file: UploadFile = File(...)):
     # preprocess the image and prepare it for classification
     cli = prepare_cli(content)
     chk_id = cli['SK_ID_CURR']
-    sample = cli.drop(['SK_ID_CURR', 'TARGET'], axis=1)
+    sample = cli.drop('SK_ID_CURR', axis=1)
     response = predict(sample, chk_id, model)
     #response = predict(content, model)
     # return the response as a JSON

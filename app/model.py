@@ -18,5 +18,5 @@ def prepare_cli(content):
 def predict(sample, id, clf):
     X=sample.iloc[:, :-1]
 
-    score = clf.predict_proba(X[X.index == int(id)])[:,1]
+    score = clf.predict_proba(X)
     return score
