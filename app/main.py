@@ -21,8 +21,10 @@ async def prediction(file: UploadFile = File(...)):
     content = await file.read()
     #image = Image.open(BytesIO(content)).convert("RGB")
     # preprocess the image and prepare it for classification
-    #image = prepare_image(image, target=(224, 224))
-    response = predict(content, model)
+    sample = prepare_cli(content)
+    chk_id = sample['SK_ID_CURR']
+    response = predict(sample, chk_id, model)
+    #response = predict(content, model)
     # return the response as a JSON
     return {
         "filename": file.filename,
