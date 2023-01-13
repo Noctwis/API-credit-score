@@ -4,4 +4,4 @@ python-multipart==0.0.5
 pytest==6.1.2
 httpcore<=0.15
 lightgbm==3.2.1
-pandas==0.24.2
+pandas<=0.24.2
