@@ -31,7 +31,7 @@ async def prediction(file: UploadFile = File(...)):
     chk_id = df['SK_ID_CURR']
     sample = df.drop('SK_ID_CURR', axis=1)
     response = predict(sample, chk_id, model)
-    response2 = predict2(sample, chk_id, model)
+    #response2 = predict2(sample, chk_id, model)
     # return the response as a JSON
     return {
         "filename": file.filename,
