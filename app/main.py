@@ -2,9 +2,12 @@ from io import BytesIO
 from typing import List
 import uvicorn
 from fastapi import FastAPI, File, HTTPException, UploadFile
-from model import load_model, predict
+from model import load_model, predict, prepare_cli
 #from PIL import Image
 from pydantic import BaseModel
+import json
+import pandas as pd
+
 app = FastAPI()
 model = load_model()
 # Define the response JSON
@@ -12,25 +15,26 @@ model = load_model()
 class Prediction(BaseModel):
     filename: str
     content_type: str
-    predictions: List[dict] = []
+    Pourcentage_de_non_solvabilité: int
 @app.post("/predict", response_model=Prediction)
 async def prediction(file: UploadFile = File(...)):
     # Ensure that the file is an image
     #if not file.content_type.startswith("image/"):
     #    raise HTTPException(status_code=400, detail="File provided is not an image.")
     content = await file.read()
-    #image = Image.open(BytesIO(content)).convert("RGB")
+    cli = json.loads(content)
+        
+    df = pd.read_json(cli)
     # preprocess the image and prepare it for classification
-    cli = prepare_cli(content)
-    chk_id = cli['SK_ID_CURR']
-    sample = cli.drop('SK_ID_CURR', axis=1)
+    #cli = prepare_cli(content)
+    chk_id = df['SK_ID_CURR']
+    sample = df.drop('SK_ID_CURR', axis=1)
     response = predict(sample, chk_id, model)
-    #response = predict(content, model)
     # return the response as a JSON
     return {
         "filename": file.filename,
         "content_type": file.content_type,
-        "predictions": 'bonjou',
+        "Pourcentage_de_non_solvabilité": response,
     }
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=5000)
