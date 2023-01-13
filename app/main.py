@@ -15,8 +15,8 @@ model = load_model()
 class Prediction(BaseModel):
     filename: str
     content_type: str
-    Pourcentage_de_solvabilité: int
     Pourcentage_de_non_solvabilité: int
+    #Pourcentage_de_solvabilité: int
 @app.post("/predict", response_model=Prediction)
 async def prediction(file: UploadFile = File(...)):
     # Ensure that the file is an image
@@ -37,7 +37,7 @@ async def prediction(file: UploadFile = File(...)):
         "filename": file.filename,
         "content_type": file.content_type,
         "Pourcentage_de_non_solvabilité": response,
-        "Pourcentage_de_solvabilité": response2,
+        #"Pourcentage_de_solvabilité": response2,
     }
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=5000)
