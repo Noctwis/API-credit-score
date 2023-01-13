@@ -15,7 +15,7 @@ model = load_model()
 class Prediction(BaseModel):
     filename: str
     content_type: str
-    Pourcentage_de_solvabilité; int
+    Pourcentage_de_solvabilité: int
     Pourcentage_de_non_solvabilité: int
 @app.post("/predict", response_model=Prediction)
 async def prediction(file: UploadFile = File(...)):
