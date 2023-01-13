@@ -23,3 +23,9 @@ def predict(sample, id, clf):
 
     score = clf.predict_proba(X)[0][1] * 100
     return score
+    
+def predict2(sample, id, clf):
+    X=sample.iloc[:, :-1]
+
+    score = clf.predict_proba(X)[0][0] * 100
+    return score
