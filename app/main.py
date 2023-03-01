@@ -1,43 +1,78 @@
-from io import BytesIO
-from typing import List
-import uvicorn
-from fastapi import FastAPI, File, HTTPException, UploadFile
-from model import load_model, predict, prepare_cli
-#from PIL import Image
-from pydantic import BaseModel
-import json
+#APP FLASK (commande : flask run)
+# Partie formulaire non utilisée (uniquement appel à l'API)
+
+from flask import Flask, render_template, jsonify, request, flash, redirect, url_for
+from flask_wtf import Form, validators  
+from wtforms.fields import StringField
+from wtforms import TextField, BooleanField, PasswordField, TextAreaField, validators
+from wtforms.widgets import TextArea
+#from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
+
+from toolbox.predict import *
 import pandas as pd
+import xgboost
 
-app = FastAPI()
-model = load_model()
-# Define the response JSON
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
-class Prediction(BaseModel):
-    filename: str
-    content_type: str
-    Pourcentage_de_non_solvabilité: int
-    #Pourcentage_de_solvabilité: int
-@app.post("/predict", response_model=Prediction)
-async def prediction(file: UploadFile = File(...)):
-    # Ensure that the file is an image
-    #if not file.content_type.startswith("image/"):
-    #    raise HTTPException(status_code=400, detail="File provided is not an image.")
-    content = await file.read()
-    cli = json.loads(content)
-        
-    df = pd.read_json(cli)
-    # preprocess the image and prepare it for classification
-    #cli = prepare_cli(content)
-    chk_id = df['SK_ID_CURR']
-    sample = df.drop('SK_ID_CURR', axis=1)
-    response = predict(sample, chk_id, model)
-    #response2 = predict2(sample, chk_id, model)
-    # return the response as a JSON
-    return {
-        "filename": file.filename,
-        "content_type": file.content_type,
-        "Pourcentage_de_non_solvabilité": response,
-        #"Pourcentage_de_solvabilité": response2,
-    }
+
+# App config.
+DEBUG = True
+app = Flask(__name__)
+app.config.from_object(__name__)
+app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
+
+#formulaire d'appel à l'API (facultatif)
+class SimpleForm(Form):
+    form_id = TextField('id:', validators=[validators.required()])
+    
+    @app.route("/", methods=['GET', 'POST'])
+    def form():
+        form = SimpleForm(request.form)
+        print(form.errors)
+
+        if request.method == 'POST':
+            form_id=request.form['id']
+            print(form_id)
+            return(redirect('credit/'+form_id)) 
+    
+        if form.validate():
+            # Save the comment here.
+            flash('Vous avez demandé l\'ID : ' + form_id)
+            redirect('')
+        else:
+            flash('Veuillez compléter le champ. ')
+    
+        return render_template('formulaire_id.html', form=form)
+
+
+#Load Dataframe
+path_df = '../data/train.csv'
+dataframe = pd.read_csv(path_df)
+
+@app.route('/credit/<id_client>', methods=['GET'])
+def credit(id_client):
+
+    #récupération id client depuis argument url
+    #id_client = request.args.get('id_client', default=1, type=int)
+    
+    #DEBUG
+    #print('id_client : ', id_client)
+    #print('shape df ', dataframe.shape)
+    
+    #calcul prédiction défaut et probabilité de défaut
+    prediction, proba = predict_flask(id_client, dataframe)
+
+    dict_final = {
+        'prediction' : int(prediction),
+        'proba' : float(proba[0][0])
+        }
+
+    print('Nouvelle Prédiction : \n', dict_final)
+
+    return jsonify(dict_final)
+
+
+#lancement de l'application
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=5000)
+    app.run(debug=True)
