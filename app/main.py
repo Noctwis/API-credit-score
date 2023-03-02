@@ -21,7 +21,9 @@ def prediction(id):
     #if not file.content_type.startswith("image/"):
     #    raise HTTPException(status_code=400, detail="File provided is not an image.")
     #content = await file.read()
-    data = pd.read_csv('X_sample.csv')
+    z = ZipFile("data/X_sample.zip")
+    data = pd.read_csv(z.open('X_sample.csv'), index_col='SK_ID_CURR', encoding ='utf-8')
+    #data = pd.read_csv('X_sample.csv')
     data2 = data[data['SK_ID_CURR'] == id]
     js = data2.drop('TARGET',axis=1).to_json(orient = 'columns')
     content = js
