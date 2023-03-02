@@ -15,7 +15,7 @@ model = load_model()
 class Prediction(BaseModel):
     Pourcentage_de_non_solvabilité: int
     #Pourcentage_de_solvabilité: int
-@app.post("/predict/{client_id}", response_model=Prediction)
+@app.post("/predict/", response_model=Prediction)
 def prediction(content):
     # Ensure that the file is an image
     #if not file.content_type.startswith("image/"):
