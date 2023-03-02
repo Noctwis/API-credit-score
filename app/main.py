@@ -13,8 +13,6 @@ model = load_model()
 # Define the response JSON
 
 class Prediction(BaseModel):
-    filename: str
-    content_type: str
     Pourcentage_de_non_solvabilité: int
     #Pourcentage_de_solvabilité: int
 @app.post("/predict/{client_id}", response_model=Prediction)
@@ -33,11 +31,7 @@ def prediction(content):
     response = predict(sample, chk_id, model)
     #response2 = predict2(sample, chk_id, model)
     # return the response as a JSON
-    return {
-        "filename": file.filename,
-        "content_type": file.content_type,
-        "Pourcentage_de_non_solvabilité": response,
-        #"Pourcentage_de_solvabilité": response2,
-    }
+    return response
+    
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=5000)
