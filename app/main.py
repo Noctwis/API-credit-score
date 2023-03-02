@@ -16,11 +16,16 @@ class Prediction(BaseModel):
     Pourcentage_de_non_solvabilité: int
     #Pourcentage_de_solvabilité: int
 @app.post("/predict/", response_model=Prediction)
-def prediction(content):
+def prediction(id):
     # Ensure that the file is an image
     #if not file.content_type.startswith("image/"):
     #    raise HTTPException(status_code=400, detail="File provided is not an image.")
     #content = await file.read()
+    data = pd.read_csv('X_sample.csv')
+    data2 = data[data['SK_ID_CURR'] == id]
+    js = data2.drop('TARGET',axis=1).to_json(orient = 'columns')
+    content = js
+    
     cli = json.loads(content)
         
     df = pd.read_json(cli)
